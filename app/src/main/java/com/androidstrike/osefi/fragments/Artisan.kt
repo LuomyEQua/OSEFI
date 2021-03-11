@@ -12,8 +12,14 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import com.androidstrike.osefi.R
+import com.androidstrike.osefi.adapters.LocateHolder
+import com.androidstrike.osefi.adapters.SavedHolder
 import com.androidstrike.osefi.models.Artisans
+import com.androidstrike.osefi.models.Locates
+import com.androidstrike.osefi.models.Saved
 import com.androidstrike.osefi.utils.toast
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
 import kotlinx.android.synthetic.main.fragment_artisan.*
 
@@ -25,6 +31,13 @@ class Artisan : Fragment() {
     var artModel: Artisans? =null
 
     var aArtisanId: String? = null
+    var aArtisanName: String? = null
+    var aArtisanLocation: String? = null
+
+    var artisanName: String? = null
+    var locationMap: String? = null
+
+    var artisanLocation: String? = null
 
     var saved: Boolean = false
 
@@ -43,7 +56,15 @@ class Artisan : Fragment() {
 
         if (arguments?.getString("artisanId") != null){
             aArtisanId = arguments?.getString("artisanId")!!
+            aArtisanName = arguments?.getString("artisanName")!!
+            aArtisanLocation = arguments?.getString("artisanLocation")!!
         }
+
+//        if (saved)
+//            artisan_save.setImageResource(R.drawable.ic_baseline_no_bookmark_24)
+//        else if (!saved)
+//            artisan_save.setImageResource(R.drawable.ic_baseline_yes_bookmark_24)
+//
 
         database = FirebaseDatabase.getInstance()
         query = database.getReference("Providers/$aArtisanId")
@@ -56,6 +77,7 @@ class Artisan : Fragment() {
                 artisan_phone.text = artModel!!.phone
                 artisan_xp.append("${artModel!!.experience} experience")
                 artisan_location.text = artModel!!.location
+                artisan_services.text = artModel!!.services
 
                 setClicks()
             }
@@ -70,8 +92,9 @@ class Artisan : Fragment() {
 
     private fun setClicks() {
         artisan_email.setOnClickListener {
-            val emailAddress = artisan_email.text.toString()
-            val artisanName = artisan_name.text.toString()
+            val emailAddress = artModel!!.email //todo the email should also come from bundle
+            artisanName = artisan_name.text.toString()
+            artisanLocation = artModel!!.location
 
             val emailIntent = Intent(Intent.ACTION_SEND)
             emailIntent.putExtra(Intent.EXTRA_EMAIL, emailAddress)
@@ -95,7 +118,7 @@ class Artisan : Fragment() {
         }
 
         artisan_location.setOnClickListener {
-            val locationMap = artisan_location.text.toString()
+            locationMap = artisan_location.text.toString()
 
             val builder = Uri.Builder()
             builder.scheme("geo")
@@ -115,6 +138,7 @@ class Artisan : Fragment() {
         artisan_save.setOnClickListener {
             if (!saved){
                 artisan_save.setImageResource(R.drawable.ic_baseline_yes_bookmark_24)
+                addToSaved()
                 saved = true
                 activity?.toast("Saved")
             }
@@ -125,5 +149,23 @@ class Artisan : Fragment() {
             }
 
         }
+    }
+
+    private fun addToSaved() {
+
+        lateinit var mAuth : FirebaseAuth
+        lateinit var table_saved: DatabaseReference
+        lateinit var userId:String
+
+        mAuth = FirebaseAuth.getInstance()
+        val user = mAuth.currentUser
+        userId = user!!.uid
+
+        table_saved = database.getReference().child("Users/$userId/saved")
+
+        val newSave = Saved(aArtisanId.toString(), aArtisanName.toString(), aArtisanLocation.toString())
+
+        table_saved.child(aArtisanId.toString()).setValue(newSave)
+
     }
 }

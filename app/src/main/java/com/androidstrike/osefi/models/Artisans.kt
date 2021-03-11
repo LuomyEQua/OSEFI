@@ -8,6 +8,7 @@ class Artisans {
     lateinit var location: String
     lateinit var name: String
     lateinit var phone: String
+    lateinit var services: String
 
     constructor()
     constructor(
@@ -16,7 +17,8 @@ class Artisans {
         id: String,
         location: String,
         name: String,
-        phone: String
+        phone: String,
+        services: String
     ) {
         this.email = email
         this.experience = experience
@@ -24,6 +26,7 @@ class Artisans {
         this.location = location
         this.name = name
         this.phone = phone
+        this.services = services
     }
 
 

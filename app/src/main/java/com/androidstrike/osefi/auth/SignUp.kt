@@ -138,7 +138,6 @@ class SignUp : Fragment() {
                 if (it.isSuccessful){
                     //Registration success
                     //we call the login function from the helper class
-                        //todo add the other details to be saved in the realtime database
                             val user = mAuth.currentUser
                     userId = user!!.uid
                     emailAddress = user.email

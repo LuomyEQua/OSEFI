@@ -90,6 +90,8 @@ class Locate : Fragment() {
     private fun openArtisanPerson(model: Locates) {
 
         val artisanId = model.id
+        val artisanName = model.name
+        val artisanLocation = model.location
 
 
 
@@ -97,6 +99,8 @@ class Locate : Fragment() {
 
         val bundle = Bundle()
         bundle.putString("artisanId", artisanId)
+        bundle.putString("artisanName", artisanName)
+        bundle.putString("artisanLocation", artisanLocation)
         frag_art.arguments = bundle
 
         val manager = fragmentManager
