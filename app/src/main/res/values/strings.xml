@@ -35,4 +35,9 @@
     <string name="menu_utilities">Utilities</string>
 
     <string name="profile_Saved">Saved Artisans</string>
+
+    <string name="search_service_name">Search by Service Name</string>
+    <string name="search_location">Search by Provider Location</string>
+    <string name="search_provider_name">Search by Provider Name</string>
+
 </resources>
